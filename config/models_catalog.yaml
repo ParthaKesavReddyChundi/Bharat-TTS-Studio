@@ -1,0 +1,209 @@
+models:
+  # ── Meta MMS-TTS (VITS) — Guaranteed working ──
+  - id: mms-tts-hin
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Hindi by Meta. No download needed for first run (cached ~30MB).
+    adapter_type: mms-tts
+    languages: [hi]
+    repo_id: facebook/mms-tts-hin
+
+  - id: mms-tts-tam
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Tamil by Meta.
+    adapter_type: mms-tts
+    languages: [ta]
+    repo_id: facebook/mms-tts-tam
+
+  - id: mms-tts-tel
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Telugu by Meta.
+    adapter_type: mms-tts
+    languages: [te]
+    repo_id: facebook/mms-tts-tel
+
+  - id: mms-tts-mar
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Marathi by Meta.
+    adapter_type: mms-tts
+    languages: [mr]
+    repo_id: facebook/mms-tts-mar
+
+  - id: mms-tts-guj
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Gujarati by Meta.
+    adapter_type: mms-tts
+    languages: [gu]
+    repo_id: facebook/mms-tts-guj
+
+  - id: mms-tts-ben
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Bengali by Meta.
+    adapter_type: mms-tts
+    languages: [bn]
+    repo_id: facebook/mms-tts-ben
+
+  - id: mms-tts-kan
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Kannada by Meta.
+    adapter_type: mms-tts
+    languages: [kn]
+    repo_id: facebook/mms-tts-kan
+
+  - id: mms-tts-mal
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Malayalam by Meta.
+    adapter_type: mms-tts
+    languages: [ml]
+    repo_id: facebook/mms-tts-mal
+
+  - id: mms-tts-pan
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Punjabi by Meta.
+    adapter_type: mms-tts
+    languages: [pa]
+    repo_id: facebook/mms-tts-pan
+
+  - id: mms-tts-urd
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Urdu by Meta.
+    adapter_type: mms-tts
+    languages: [ur]
+    repo_id: facebook/mms-tts-urd
+
+  - id: mms-tts-eng
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for English by Meta.
+    adapter_type: mms-tts
+    languages: [en]
+    repo_id: facebook/mms-tts-eng
+
+  - id: mms-tts-ory
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Odia by Meta.
+    adapter_type: mms-tts
+    languages: [or]
+    repo_id: facebook/mms-tts-ory
+
+  - id: mms-tts-asm
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Assamese by Meta.
+    adapter_type: mms-tts
+    languages: [as]
+    repo_id: facebook/mms-tts-asm
+
+  - id: mms-tts-npi
+    name: Meta MMS-TTS
+    description: Lightweight VITS TTS for Nepali by Meta.
+    adapter_type: mms-tts
+    languages: [ne]
+    repo_id: facebook/mms-tts-npi
+
+  # ── Microsoft SpeechT5 — High quality neural TTS ──
+  - id: speecht5-hi
+    name: Microsoft SpeechT5
+    description: |
+      High quality neural TTS by Microsoft. 
+      Uses SpeechT5 transformer + HiFiGAN vocoder. 
+  # ── Silero TTS — Fast compact VITS-based ──
+  - id: silero-hi
+    name: Silero TTS
+    description: |
+      Fast, compact VITS-based TTS from Silero.
+      Hindi voice with natural prosody. 
+      First run downloads ~60MB. Fully open access.
+    adapter_type: silero
+    languages: [hi, mr]
+    language_code: "hi"
+    silero_model_id: "v3_indic"
+    sample_rate: 48000
+    speakers:
+      hi:
+        - { id: "hindi_male", name: "Hindi Male" }
+        - { id: "hindi_female", name: "Hindi Female" }
+      mr:
+        - { id: "hindi_male", name: "Marathi Male" }
+        - { id: "hindi_female", name: "Marathi Female" }
+
+  # ── Suno Bark (Small) — Expressive generative TTS ──
+  - id: bark-small-multi
+    name: Suno Bark (Small)
+    description: |
+      Expressive LLM-based generative TTS by Suno.
+      Supports Hindi, English, and 11 more languages naturally.
+    adapter_type: bark
+    languages: [hi, en, ta, te, bn]
+    repo_id: suno/bark-small
+    speakers:
+      hi:
+        - { id: "v2/hi_speaker_0", name: "Male 1" }
+        - { id: "v2/hi_speaker_1", name: "Female 1" }
+        - { id: "v2/hi_speaker_2", name: "Male 2" }
+        - { id: "v2/hi_speaker_3", name: "Female 2" }
+      en:
+        - { id: "v2/en_speaker_0", name: "Male 1" }
+        - { id: "v2/en_speaker_1", name: "Male 2" }
+        - { id: "v2/en_speaker_2", name: "Male 3" }
+        - { id: "v2/en_speaker_3", name: "Male 4" }
+        - { id: "v2/en_speaker_9", name: "Female 1" }
+      ta:
+        - { id: "v2/ta_speaker_0", name: "Male 1" }
+        - { id: "v2/ta_speaker_1", name: "Female 1" }
+      te:
+        - { id: "v2/te_speaker_0", name: "Male 1" }
+        - { id: "v2/te_speaker_1", name: "Female 1" }
+      bn:
+        - { id: "v2/bn_speaker_0", name: "Male 1" }
+        - { id: "v2/bn_speaker_1", name: "Female 1" }
+
+  # ── Microsoft Edge TTS — Cloud Neural Voices ──
+  - id: edge-tts-multi
+    name: Microsoft Edge TTS
+    description: |
+      Extremely high-quality neural voices from Microsoft Edge.
+      Supports many Indian languages. Requires internet connection.
+      Does not use local GPU/RAM. Never crashes.
+    adapter_type: edge_tts
+    languages: [hi, ta, te, mr, bn, ur, gu, kn, ml, pa]
+    speakers:
+      hi:
+        - { id: "hi-IN-MadhurNeural", name: "Madhur (Male)" }
+        - { id: "hi-IN-SwaraNeural", name: "Swara (Female)" }
+      ta:
+        - { id: "ta-IN-ValluvarNeural", name: "Valluvar (Male)" }
+        - { id: "ta-IN-PallaviNeural", name: "Pallavi (Female)" }
+      te:
+        - { id: "te-IN-MohanNeural", name: "Mohan (Male)" }
+        - { id: "te-IN-ShrutiNeural", name: "Shruti (Female)" }
+      mr:
+        - { id: "mr-IN-ManoharNeural", name: "Manohar (Male)" }
+        - { id: "mr-IN-AarohiNeural", name: "Aarohi (Female)" }
+      bn:
+        - { id: "bn-IN-BashkarNeural", name: "Bashkar (Male)" }
+        - { id: "bn-IN-TanishaaNeural", name: "Tanishaa (Female)" }
+      ur:
+        - { id: "ur-IN-SalmanNeural", name: "Salman (Male)" }
+        - { id: "ur-IN-GulNeural", name: "Gul (Female)" }
+      gu:
+        - { id: "gu-IN-NiranjanNeural", name: "Niranjan (Male)" }
+        - { id: "gu-IN-DhwaniNeural", name: "Dhwani (Female)" }
+      kn:
+        - { id: "kn-IN-GaganNeural", name: "Gagan (Male)" }
+        - { id: "kn-IN-SapnaNeural", name: "Sapna (Female)" }
+      ml:
+        - { id: "ml-IN-MidhunNeural", name: "Midhun (Male)" }
+        - { id: "ml-IN-SobhanaNeural", name: "Sobhana (Female)" }
+      pa:
+        - { id: "pa-IN-OjasNeural", name: "Ojas (Male)" }
+        - { id: "pa-IN-DishaNeural", name: "Disha (Female)" }
+
+  # ── Google Translate TTS (gTTS) ──
+  - id: gtts-multi
+    name: Google Translate TTS
+    description: |
+      Extremely fast and reliable cloud TTS from Google.
+      Requires internet connection. Zero VRAM usage.
+      Never crashes. Completely free.
+    adapter_type: gtts
+    languages: [hi, ta, te, mr, bn, ur, gu, kn, ml, pa, or, as, ne]
+
+

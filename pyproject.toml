@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "bharat-tts-studio"
+version = "0.1.0"
+description = "A local desktop playground for comparing Indian Text-to-Speech models"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Bharat TTS Studio Contributors" }
+]
+keywords = ["tts", "text-to-speech", "indian-languages", "ai4bharat", "mms-tts", "speech-synthesis"]
+
+[project.scripts]
+bharat-tts-studio = "app.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

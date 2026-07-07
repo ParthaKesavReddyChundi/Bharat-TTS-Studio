@@ -1,0 +1,48 @@
+# ============================================================
+# Bharat TTS Studio — Default Settings
+# This file is copied to config/settings.yaml on first run.
+# Edits here are NOT read at runtime; edit config/settings.yaml.
+# ============================================================
+
+app:
+  theme: dark                     # "dark" | "light"
+  window_width: 1400
+  window_height: 860
+  remember_window_geometry: true
+  log_level: INFO                 # DEBUG | INFO | WARNING | ERROR
+
+hardware:
+  device_preference: auto         # "auto" | "cuda" | "cpu"
+  cuda_device_index: 0            # GPU index (0 = first GPU)
+  memory_budget_vram_gb: 6.0      # max VRAM to use for loaded models
+  memory_budget_ram_gb: 12.0      # max RAM to use when GPU unavailable
+
+audio:
+  output_device: default          # "default" or sounddevice device name
+  default_sample_rate: 22050
+  default_bit_depth: 16           # 16 | 32
+  output_format: wav              # "wav" (only format for now)
+
+generation:
+  default_rate: 1.0               # speech rate multiplier (0.5–2.0)
+  default_pitch: 0.0              # pitch shift in semitones (-12 to +12)
+  default_volume: 1.0             # volume multiplier (0.1–2.0)
+  default_language: hi            # BCP-47 language code
+  default_model: mms_tts_indic    # model id from models_catalog.yaml
+
+cache:
+  enabled: true
+  max_size_mb: 500                # LRU eviction above this size
+  persist_across_restarts: true
+
+preprocessing:
+  emoji_mode: strip               # "strip" | "verbalize"
+  unknown_lang_fallback: skip     # "skip" | "error" for unsupported lang rules
+
+ui:
+  show_spectrogram: true
+  show_waveform: true
+  show_system_info: true
+  show_log_console: true
+  history_max_rows: 200
+  toast_duration_ms: 4000

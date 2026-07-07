@@ -1,0 +1,127 @@
+# ============================================================
+# Bharat TTS Studio — Languages Catalog
+#
+# Maps BCP-47 language codes to display metadata.
+# Used by GUI selectors, i18n_labels.py, and adapters.
+# ============================================================
+
+languages:
+  - code: hi
+    name_english: Hindi
+    name_native: "हिन्दी"
+    script: Devanagari
+    family: Indo-Aryan
+    official: true
+    regions: ["North India", "Central India"]
+
+  - code: ta
+    name_english: Tamil
+    name_native: "தமிழ்"
+    script: Tamil
+    family: Dravidian
+    official: true
+    regions: ["Tamil Nadu", "Puducherry", "Sri Lanka"]
+
+  - code: te
+    name_english: Telugu
+    name_native: "తెలుగు"
+    script: Telugu
+    family: Dravidian
+    official: true
+    regions: ["Andhra Pradesh", "Telangana"]
+
+  - code: kn
+    name_english: Kannada
+    name_native: "ಕನ್ನಡ"
+    script: Kannada
+    family: Dravidian
+    official: true
+    regions: ["Karnataka"]
+
+  - code: ml
+    name_english: Malayalam
+    name_native: "മലയാളം"
+    script: Malayalam
+    family: Dravidian
+    official: true
+    regions: ["Kerala", "Lakshadweep"]
+
+  - code: bn
+    name_english: Bengali
+    name_native: "বাংলা"
+    script: Bengali
+    family: Indo-Aryan
+    official: true
+    regions: ["West Bengal", "Bangladesh"]
+
+  - code: gu
+    name_english: Gujarati
+    name_native: "ગુજરાતી"
+    script: Gujarati
+    family: Indo-Aryan
+    official: true
+    regions: ["Gujarat"]
+
+  - code: mr
+    name_english: Marathi
+    name_native: "मराठी"
+    script: Devanagari
+    family: Indo-Aryan
+    official: true
+    regions: ["Maharashtra"]
+
+  - code: pa
+    name_english: Punjabi
+    name_native: "ਪੰਜਾਬੀ"
+    script: Gurmukhi
+    family: Indo-Aryan
+    official: true
+    regions: ["Punjab"]
+
+  - code: or
+    name_english: Odia
+    name_native: "ଓଡ଼ିଆ"
+    script: Odia
+    family: Indo-Aryan
+    official: true
+    regions: ["Odisha"]
+
+  - code: as
+    name_english: Assamese
+    name_native: "অসমীয়া"
+    script: Bengali
+    family: Indo-Aryan
+    official: true
+    regions: ["Assam"]
+
+  - code: ur
+    name_english: Urdu
+    name_native: "اردو"
+    script: Nastaliq
+    family: Indo-Aryan
+    official: true
+    regions: ["Uttar Pradesh", "Pakistan"]
+
+  - code: ne
+    name_english: Nepali
+    name_native: "नेपाली"
+    script: Devanagari
+    family: Indo-Aryan
+    official: false
+    regions: ["Sikkim", "Nepal"]
+
+  - code: sa
+    name_english: Sanskrit
+    name_native: "संस्कृतम्"
+    script: Devanagari
+    family: Indo-Aryan
+    official: false
+    regions: ["Classical"]
+
+  - code: en
+    name_english: English
+    name_native: "English"
+    script: Latin
+    family: Germanic
+    official: false
+    regions: ["Code-mix / Hinglish support"]
