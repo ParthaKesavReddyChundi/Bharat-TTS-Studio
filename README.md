@@ -10,7 +10,7 @@
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **Multi-Model Comparison:** Generate and evaluate audio from multiple TTS architectures simultaneously using the same normalized input prompt.
 - **Robust Text Normalization:** A 15-stage preprocessing pipeline designed explicitly to handle the complex phonetics and scripts of Indian languages.
@@ -20,7 +20,7 @@
 
 ---
 
-## 🧠 Architectural Deep Dive: Supported Models
+## Architectural Deep Dive: Supported Models
 
 The studio employs a hybrid approach, supporting highly compressed local VITS models, expressive generative LLMs, and zero-VRAM cloud endpoints.
 
@@ -54,7 +54,7 @@ The studio employs a hybrid approach, supporting highly compressed local VITS mo
 
 ---
 
-## ⚡ Hardware Acceleration: CPU vs. CUDA
+## Hardware Acceleration: CPU vs. CUDA
 
 Bharat TTS Studio is explicitly designed to respect your hardware constraints. Within the Settings tab, users can toggle the inference engine between **CPU** and **CUDA** (NVIDIA GPU).
 
@@ -66,7 +66,7 @@ Bharat TTS Studio is explicitly designed to respect your hardware constraints. W
 
 ---
 
-## 🛠️ Setup & Installation
+## Setup & Installation
 
 ### 1. Environment Setup
 Create and activate a Python 3.10+ virtual environment:
@@ -94,7 +94,7 @@ python app/main.py
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 - `app/models/adapters/`: The core implementations integrating Hugging Face, PyTorch Hub, and Cloud APIs.
 - `app/engine/`: Orchestration logic for safely allocating VRAM and coordinating concurrent synthesis.
@@ -102,5 +102,5 @@ python app/main.py
 - `app/gui/`: The PySide6 frontend, strictly decoupled from inference via Qt Signals (Event Bus).
 - `config/`: YAML-driven model catalogs and application settings.
 
-## 📄 License
+## License
 The Bharat TTS Studio application code is provided under the MIT License. Please refer to the individual model cards (Meta, Suno, Silero) for their respective weights and usage licenses.
