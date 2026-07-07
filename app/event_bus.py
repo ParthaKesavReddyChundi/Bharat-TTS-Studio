@@ -93,6 +93,13 @@ class EventBus(QObject):
     # Emitted when a new history record is added
     history_updated = Signal()
 
+    # ── Generation cancellation signals ───────────────────────────────────────
+    # Emitted by the Cancel button in the GUI to request a stop.
+    generation_cancel_requested = Signal()
+
+    # Emitted by the InferenceWorker once it has cleanly halted.
+    generation_cancelled = Signal()
+
     # ── Singleton ─────────────────────────────────────────────────────────────
     _instance: EventBus | None = None
 

@@ -27,7 +27,7 @@ datasets==2.21.0
 # onnxruntime-gpu==1.18.1   # uncomment if you want ONNX path
 
 # ---- Coqui TTS (for XTTS v2 adapter — Phase 6) ----------------
-# TTS==0.22.0   # uncomment in Phase 6
+# TTS==0.22.0
 
 # ---- Audio -----------------------------------------------------
 soundfile==0.12.1

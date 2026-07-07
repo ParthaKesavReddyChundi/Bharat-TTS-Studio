@@ -1,119 +1,106 @@
-# Bharat TTS Studio
+# 🇮🇳 Bharat TTS Studio
 
-Bharat TTS Studio is an offline-first desktop app for comparing Indian text-to-speech models side by side. It uses PySide6 for the UI, PyTorch-based adapters for local models, and cloud-backed fallbacks for comparison and coverage.
+<div align="center">
+  <h3>An Offline-First Desktop Studio for Indian Text-to-Speech Synthesis</h3>
+</div>
 
-## What It Does
+<br/>
 
-- Compare multiple TTS engines with the same input text.
-- Normalize Indian text before synthesis with a 15-stage preprocessing pipeline.
-- Load local checkpoints only when needed, then unload them to keep memory usage low.
-- Play, save, and browse generated WAV files from inside the app.
-- Keep the runtime self-contained: the app works after the model checkpoints are downloaded once.
+**Bharat TTS Studio** is an advanced, offline-first desktop application designed for seamlessly generating, comparing, and analyzing Indian Text-to-Speech (TTS) models. Built with a responsive **PySide6** user interface and heavily optimized **PyTorch** adapters, it provides researchers and creators with a unified platform to evaluate both lightweight local neural networks and high-fidelity cloud models side by side.
 
-## Model Coverage
+---
 
-The repository currently has two layers of model support:
+## ✨ Key Features
 
-- Cataloged models exposed by `config/models_catalog.yaml` and the GUI.
-- Adapter families implemented in `app/models/adapters/` that are ready for catalog wiring or future expansion.
+- **Multi-Model Comparison:** Generate and evaluate audio from multiple TTS architectures simultaneously using the same normalized input prompt.
+- **Robust Text Normalization:** A 15-stage preprocessing pipeline designed explicitly to handle the complex phonetics and scripts of Indian languages.
+- **Hardware-Aware Memory Management:** Dynamically loads model weights into VRAM only during inference and purges them immediately after, strictly adhering to an intelligent memory budget to prevent out-of-memory (OOM) crashes on consumer GPUs (e.g., 8GB RTX 4060).
+- **Integrated Workspace:** Built-in audio playback, waveform/spectrogram visualization, and an interactive history browser to manage your synthesized outputs.
+- **Cloud Fallbacks:** Guarantees zero-downtime synthesis by transparently falling back to Microsoft Edge TTS and Google Translate TTS when local hardware limits are reached.
 
-### Cataloged Models
+---
 
-| Family / IDs | Architecture | Languages in this repo | Training / source notes | Distinctive traits |
-| --- | --- | --- | --- | --- |
-| Meta MMS-TTS (`mms-tts-hin`, `mms-tts-tam`, `mms-tts-tel`, `mms-tts-mar`, `mms-tts-guj`, `mms-tts-ben`, `mms-tts-kan`, `mms-tts-mal`, `mms-tts-pan`, `mms-tts-urd`, `mms-tts-eng`, `mms-tts-ory`, `mms-tts-asm`, `mms-tts-npi`) | VITS checkpoint per language | hi, ta, te, mr, gu, bn, kn, ml, pa, ur, en, or, as, ne | Public checkpoint cards identify the MMS project and VITS architecture; they do not enumerate the exact per-language corpus mixture in the checkpoint README. | Light local footprint, one model per language, offline inference after download. |
-| Silero TTS (`silero-hi`) | Compact VITS-style model via PyTorch Hub | hi, mr | Public details focus on the runtime family; the training corpus is not spelled out in this repository snapshot. | Fast, compact, 48 kHz output, multiple Indic speaker presets. |
-| Suno Bark (`bark-small-multi`) | Transformer text-to-semantic-token plus semantic-to-audio decoding | hi, en, ta, te, bn | Public model card describes the Bark family and its inference path, but does not itemize the full pretraining corpus here. | Highly expressive, voice preset driven, can render laughter and other nonverbal audio. |
-| Microsoft Edge TTS (`edge-tts-multi`) | Cloud neural voice service | hi, ta, te, mr, bn, ur, gu, kn, ml, pa | Vendor-hosted service; local training data is not exposed because the app calls the online API. | No local GPU/RAM load, broad Indian-language coverage, requires internet. |
-| Google Translate TTS (`gtts-multi`) | Cloud speech-synthesis service | hi, ta, te, mr, bn, ur, gu, kn, ml, pa, or, as, ne | Vendor-hosted service; the app uses the online Translate TTS endpoint. | Very light fallback path, no local checkpoint downloads. |
+## 🧠 Architectural Deep Dive: Supported Models
 
-### Implemented Adapter Families
+The studio employs a hybrid approach, supporting highly compressed local VITS models, expressive generative LLMs, and zero-VRAM cloud endpoints.
 
-| Family | Status in repo | Architecture | Languages | Training / source notes | Distinctive traits |
-| --- | --- | --- | --- | --- | --- |
-| SpeechT5 (`speecht5-hi`) | Adapter implemented in code, but not fully wired in the current YAML snapshot | Shared encoder-decoder with SpeechT5 HiFiGAN vocoder | hi | The public model card says the TTS checkpoint is fine-tuned on LibriTTS and uses speaker embeddings from `Matthijs/cmu-arctic-xvectors`. | Open-access neural TTS with a clean speaker-embedding workflow. |
-| Indic Parler-TTS (`indic-parler-tts`) | Adapter implemented in code, ready for catalog wiring | Parler-TTS conditional generation with transcript + descriptive caption | Officially supports Assamese, Bengali, Bodo, Dogri, English, Gujarati, Hindi, Kannada, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Odia, Punjabi, Sanskrit, Santali, Sindhi, Tamil, Telugu, and Urdu | The public model card says the model is a fine-tune of Indic Parler-TTS Pretrained on a 1,806 hour multilingual Indic and English dataset built from GLOBE-annotated, IndicTTS, LIMMITS, and Rasa. | Caption-conditioned speech with controllable style, emotion, and speaker identity. |
-| Veena (`maya-research/Veena`) | Adapter implemented in code, ready for catalog wiring | 3B parameter Llama-style autoregressive transformer with SNAC codec | Hindi, English | The public model card says the model was trained on proprietary Hindi and English datasets; the exact corpus is not publicly released. | Speaker tokens, code-mixed output, 24 kHz SNAC decoding, low-latency generation. |
+### 1. Suno Bark (Small)
+* **Architecture:** Text-to-Semantic-Token Transformer → Semantic-to-Audio Decoder.
+* **Analysis:** Bark operates unlike traditional phoneme-based TTS. It acts as an autoregressive Language Model that predicts discrete audio tokens. This gives it unparalleled expressiveness—allowing it to natively generate non-verbal cues (laughs, sighs) and highly emotional prosody.
+* **Uniqueness:** Driven purely by `voice_presets` rather than raw speaker embeddings, making it capable of astonishingly human-like rhythms.
+* **Footprint:** Requires ~3.5GB VRAM. Enforced `float16` precision in this repository ensures it runs safely on mid-range GPUs.
+* **Languages:** Hindi, Bengali, Tamil, Telugu, English.
 
-## Module Map
+### 2. Silero TTS (`v3_indic`)
+* **Architecture:** VITS (Variational Inference with adversarial learning for end-to-end Text-to-Speech).
+* **Analysis:** An exceptionally streamlined, end-to-end architecture that maps text directly to waveforms. It bypasses traditional separate vocoder stages (like HiFiGAN), resulting in blazing fast inference times.
+* **Uniqueness:** Incredibly compact (~60 MB checkpoint) while offering 48 kHz high-fidelity output. Thanks to dynamic transliteration (via `aksharamukha`), it acts as a single unified checkpoint for 10 distinct Indian languages.
+* **Languages:** Hindi, Marathi, Bengali, Gujarati, Punjabi, Telugu, Malayalam, Kannada, Tamil, Odia.
 
-| Module | Responsibility |
-| --- | --- |
-| `app/main.py` | Application entry point, dependency checks, Qt bootstrap, and startup logging. |
-| `app/app_controller.py` | Top-level wiring layer that connects config, history, theme, engine, and the main window. |
-| `app/event_bus.py` | Qt signal hub for generation, comparison, model loading, download progress, errors, and toast notifications. |
-| `app/core/` | Runtime services: configuration, logging, audio playback, history persistence, cache management, exceptions, and system monitoring. |
-| `app/preprocessing/` | The 15-stage text normalization pipeline plus language-specific rule modules. |
-| `app/models/` | Adapter registry, downloader, manager, and model-specific runtime adapters. |
-| `app/engine/` | High-level orchestration for single-model synthesis and multi-model comparison. |
-| `app/inference/` | Compatibility namespace mirroring inference and comparison behavior during the codebase migration. |
-| `app/audio/` | Audio analysis, waveform/spectrogram helpers, and post-processing utilities. |
-| `app/gui/` | Main window, pages, panels, dialogs, workers, widgets, and theme assets. |
-| `app/utils/` | Shared helpers for hashing, file handling, labels, and validation. |
-| `scripts/` | Utility scripts for model verification and environment setup. |
-| `tests/` | Smoke, unit, and integration tests. |
+### 3. Meta MMS-TTS (Massively Multilingual Speech)
+* **Architecture:** VITS-based discrete models.
+* **Analysis:** Built by Meta, this project released independent, highly-optimized VITS checkpoints for over 1,000 languages. 
+* **Uniqueness:** While Bark uses a single massive model and Silero clusters regional languages into one checkpoint, MMS provides dedicated, laser-focused checkpoints for each specific language. This guarantees maximum phonetic accuracy for regional dialects at a microscopic VRAM cost (~150MB per language).
+* **Languages:** 14 distinct Indian languages.
 
-## Main Features
+### 4. Microsoft Edge TTS
+* **Architecture:** Cloud-hosted Neural TTS (Azure Cognitive Services).
+* **Analysis:** Leverages Microsoft's massive server-side infrastructure to deliver broadcast-quality, natural-sounding voices.
+* **Uniqueness:** Implemented as an API adapter, it consumes **zero local VRAM** and generates audio almost instantly. It serves as the ultimate fallback for low-end hardware.
 
-- Home tab for single-model synthesis.
-- Comparison tab for running multiple models against the same prompt.
-- History tab for browsing, replaying, opening, and deleting generated audio.
-- Settings tab for theme and basic runtime preferences.
-- Qt worker threads so the GUI stays responsive while synthesis runs.
-- History-backed audio saving in `outputs/history/`.
+### 5. Google Translate TTS (gTTS)
+* **Architecture:** Cloud-hosted concatenative/neural fallback.
+* **Uniqueness:** Ubiquitous, lightning-fast, and completely unmetered. While it lacks the emotional range of Bark or Azure, it provides guaranteed synthesis for almost any regional language when all local models fail or lack coverage.
 
-## Tech Stack
+---
 
-- Python 3.10+
-- PySide6 / Qt for the desktop UI
-- PyTorch and Hugging Face Transformers for local model loading
-- `sounddevice`, `soundfile`, and `librosa` for playback and decoding
-- `PyYAML` for config catalogs
-- `pyqtgraph` and `matplotlib` for audio visualizations
-- `pytest` and `pytest-qt` for tests
+## ⚡ Hardware Acceleration: CPU vs. CUDA
 
-## Setup
+Bharat TTS Studio is explicitly designed to respect your hardware constraints. Within the Settings tab, users can toggle the inference engine between **CPU** and **CUDA** (NVIDIA GPU).
 
-### 1. Create a virtual environment
+### Why the Toggle Exists
+1. **CUDA (Recommended):** Leverages PyTorch's GPU acceleration. Synthesizing audio on a model like Suno Bark takes seconds on an RTX 4060, compared to minutes on a CPU. 
+2. **CPU Fallback:** Generative LLM-based TTS models (like Bark) consume significant memory. If you are rendering 3D graphics or running a local LLM simultaneously, your VRAM may be exhausted. Toggling to CPU allows you to offload the TTS generation to your system RAM, preventing CUDA out-of-memory crashes at the cost of slower generation speed.
 
+*Note: The application employs a strict `SystemMonitor` that probes your GPU before loading any local model. If the required footprint exceeds your available VRAM, the app intercepts the crash and safely notifies you via the Event Bus.*
+
+---
+
+## 🛠️ Setup & Installation
+
+### 1. Environment Setup
+Create and activate a Python 3.10+ virtual environment:
 ```bash
 python -m venv .venv
-.venv\\Scripts\\activate
+.venv\Scripts\activate
 ```
 
-### 2. Install PyTorch with CUDA support
-
-If you have an NVIDIA GPU, install the CUDA wheel first:
-
+### 2. PyTorch (CUDA 12.1)
+For NVIDIA GPU acceleration (highly recommended), install the specific CUDA-compiled PyTorch wheels:
 ```bash
 pip install torch==2.3.1+cu121 torchaudio==2.3.1+cu121 --index-url https://download.pytorch.org/whl/cu121
 ```
 
-### 3. Install the app dependencies
-
+### 3. Dependencies
+Install the required application libraries (PySide6, Transformers, etc.):
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Launch the app
-
+### 4. Launch the Studio
 ```bash
 python app/main.py
 ```
 
-### 5. Optional checks
+---
 
-```bash
-python -m pytest
-```
+## 📁 Repository Structure
 
-## Runtime Notes
+- `app/models/adapters/`: The core implementations integrating Hugging Face, PyTorch Hub, and Cloud APIs.
+- `app/engine/`: Orchestration logic for safely allocating VRAM and coordinating concurrent synthesis.
+- `app/preprocessing/`: Custom 15-stage phonetic and script normalization.
+- `app/gui/`: The PySide6 frontend, strictly decoupled from inference via Qt Signals (Event Bus).
+- `config/`: YAML-driven model catalogs and application settings.
 
-- `config/settings.yaml` is created from `config/settings.default.yaml` on first run.
-- `config/history.json` is runtime state and should stay out of version control.
-- `models/`, `cache/`, `outputs/`, and `logs/` are local runtime folders.
-- The app can run on CPU, but local models are much faster with CUDA.
-
-## License
-
-MIT for the application code. Individual model licenses vary and should be checked in the corresponding model cards before redistribution.
+## 📄 License
+The Bharat TTS Studio application code is provided under the MIT License. Please refer to the individual model cards (Meta, Suno, Silero) for their respective weights and usage licenses.

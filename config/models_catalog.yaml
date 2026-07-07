@@ -1,4 +1,5 @@
 models:
+
   # ── Meta MMS-TTS (VITS) — Guaranteed working ──
   - id: mms-tts-hin
     name: Meta MMS-TTS
@@ -98,12 +99,7 @@ models:
     languages: [ne]
     repo_id: facebook/mms-tts-npi
 
-  # ── Microsoft SpeechT5 — High quality neural TTS ──
-  - id: speecht5-hi
-    name: Microsoft SpeechT5
-    description: |
-      High quality neural TTS by Microsoft. 
-      Uses SpeechT5 transformer + HiFiGAN vocoder. 
+ 
   # ── Silero TTS — Fast compact VITS-based ──
   - id: silero-hi
     name: Silero TTS
@@ -205,5 +201,3 @@ models:
       Never crashes. Completely free.
     adapter_type: gtts
     languages: [hi, ta, te, mr, bn, ur, gu, kn, ml, pa, or, as, ne]
-
-

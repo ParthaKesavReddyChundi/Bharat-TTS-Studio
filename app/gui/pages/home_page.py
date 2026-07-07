@@ -96,6 +96,12 @@ class HomePage(QWidget):
         self.btn_generate.clicked.connect(self.on_generate_clicked)
         self.btn_generate.setProperty("class", "primary") # Assuming custom styling
         
+        self.btn_cancel = QPushButton("Cancel")
+        self.btn_cancel.setMinimumHeight(40)
+        self.btn_cancel.setEnabled(False)  # Only active during generation
+        self.btn_cancel.clicked.connect(self.on_cancel_clicked)
+        self.btn_cancel.setToolTip("Stop the current generation")
+        
         self.btn_play = QPushButton("Play")
         self.btn_play.setMinimumHeight(40)
         self.btn_play.setEnabled(False)
@@ -112,6 +118,7 @@ class HomePage(QWidget):
         self.btn_save.clicked.connect(self.on_save_clicked)
         
         actions_layout.addWidget(self.btn_generate)
+        actions_layout.addWidget(self.btn_cancel)
         actions_layout.addWidget(self.btn_play)
         actions_layout.addWidget(self.btn_stop)
         actions_layout.addWidget(self.btn_save)
@@ -200,6 +207,7 @@ class HomePage(QWidget):
         device = self.device_selector.currentText()
         
         self.btn_generate.setEnabled(False)
+        self.btn_cancel.setEnabled(True)   # enable Cancel during generation
         self.btn_play.setEnabled(False)
         self.btn_save.setEnabled(False)
         self.progress_bar.setVisible(True)
@@ -211,6 +219,11 @@ class HomePage(QWidget):
         self.worker = InferenceWorker(self.engine, text, model_id, device, speaker_id=speaker_id)
         self.worker.finished_signal.connect(self.on_generation_finished)
         self.worker.error_signal.connect(self.on_generation_error)
+        
+        # Wire EventBus cancellation signal → re-enable UI
+        from app.event_bus import EventBus
+        EventBus.instance().generation_cancelled.connect(self._on_generation_cancelled)
+        
         self.worker.start()
         
     def on_generation_finished(self, waveform: np.ndarray, sr: int) -> None:
@@ -218,6 +231,7 @@ class HomePage(QWidget):
         self.current_sr = sr
         
         self.btn_generate.setEnabled(True)
+        self.btn_cancel.setEnabled(False)
         self.btn_play.setEnabled(True)
         self.btn_save.setEnabled(True)
         self.progress_bar.setVisible(False)
@@ -249,9 +263,32 @@ class HomePage(QWidget):
 
     def on_generation_error(self, error_msg: str) -> None:
         self.btn_generate.setEnabled(True)
+        self.btn_cancel.setEnabled(False)
         self.progress_bar.setVisible(False)
         self.status_label.setText("Generation failed.")
         QMessageBox.critical(self, "Synthesis Error", f"An error occurred:\n{error_msg}")
+
+    def on_cancel_clicked(self) -> None:
+        """User pressed Cancel — request cooperative stop via EventBus."""
+        if self.worker and self.worker.isRunning():
+            log.info("User requested generation cancellation.")
+            self.btn_cancel.setEnabled(False)
+            self.status_label.setText("Cancelling generation...")
+            from app.event_bus import EventBus
+            EventBus.instance().generation_cancel_requested.emit()
+
+    def _on_generation_cancelled(self) -> None:
+        """Called by EventBus when the worker has cleanly halted."""
+        self.btn_generate.setEnabled(True)
+        self.btn_cancel.setEnabled(False)
+        self.progress_bar.setVisible(False)
+        self.status_label.setText("Generation cancelled.")
+        # Disconnect one-shot slot to avoid stale connections on next run
+        try:
+            from app.event_bus import EventBus
+            EventBus.instance().generation_cancelled.disconnect(self._on_generation_cancelled)
+        except Exception:  # noqa: BLE001
+            pass
         
     def on_play_clicked(self) -> None:
         if self.current_waveform is not None:
@@ -269,14 +306,29 @@ class HomePage(QWidget):
     def on_save_clicked(self) -> None:
         if self.current_waveform is None:
             return
-            
-        file_path, _ = QFileDialog.getSaveFileName(
-            self, "Save Audio", "", "WAV Files (*.wav)"
+
+        # Build file-type filter — MP3 requires pydub; always offer WAV
+        from app.core.audio_manager import _HAS_PYDUB  # noqa: PLC0415
+        if _HAS_PYDUB:
+            file_filter = "WAV Audio (*.wav);;MP3 Audio (*.mp3);;All Files (*.*)"
+        else:
+            file_filter = "WAV Audio (*.wav);;All Files (*.*)"
+
+        file_path, selected_filter = QFileDialog.getSaveFileName(
+            self, "Save Audio", "", file_filter
         )
-        if file_path:
-            success = AudioManager.save(file_path, self.current_waveform, self.current_sr)
-            if success:
-                QMessageBox.information(self, "Success", f"Audio saved to {file_path}")
-                self.status_label.setText(f"Saved to {file_path}")
-            else:
-                QMessageBox.critical(self, "Error", "Failed to save audio. Check logs.")
+        if not file_path:
+            return
+
+        # If the user selected MP3 filter but didn't type the extension, add it
+        if "MP3" in selected_filter and not file_path.lower().endswith(".mp3"):
+            file_path += ".mp3"
+        elif "WAV" in selected_filter and not file_path.lower().endswith(".wav"):
+            file_path += ".wav"
+
+        success = AudioManager.save(file_path, self.current_waveform, self.current_sr)
+        if success:
+            QMessageBox.information(self, "Success", f"Audio saved to {file_path}")
+            self.status_label.setText(f"Saved to {file_path}")
+        else:
+            QMessageBox.critical(self, "Error", "Failed to save audio. Check logs.")

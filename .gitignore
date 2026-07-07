@@ -1,5 +1,5 @@
-﻿# Model checkpoints (too large for git)
-models/
+# Model checkpoints (too large for git)
+/models/
 cache/
 outputs/
 logs/
